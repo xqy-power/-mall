@@ -1,0 +1,24 @@
+server:
+  port: 88
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    gateway:
+      routes:
+        - id: test
+          uri: https://www.baidu.com
+          predicates:
+            - Query=test,baidu
+        - id: test2
+          uri: https://www.qq.com
+          predicates:
+            - Query=test,qq
+  application:
+    name: gulimall-gateway
+
+
+
