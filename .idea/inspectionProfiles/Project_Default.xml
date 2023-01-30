@@ -1,0 +1,43 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="AlibabaCommentsMustBeJavadocFormat" enabled="true" level="INFORMATION" enabled_by_default="true" editorAttributes="INFORMATION_ATTRIBUTES" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="108" name="Java" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="MavenPackageUpdate" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="excludeList">
+        <list>
+          <option value="joda-time:joda-time" />
+          <option value="io.springfox:springfox-swagger2" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="mysql:mysql-connector-java" />
+          <option value="io.springfox:springfox-swagger-ui" />
+          <option value="io.jsonwebtoken:jjwt" />
+          <option value="commons-io:commons-io" />
+          <option value="commons-fileupload:commons-fileupload" />
+          <option value="commons-codec:commons-codec" />
+          <option value="com.qiniu:qiniu-java-sdk" />
+          <option value="cn.hutool:hutool-all" />
+          <option value="org.apache.shiro:shiro-spring" />
+          <option value="com.alibaba:druid-spring-boot-starter" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
