@@ -11,6 +11,9 @@ spring:
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
   application:
     name: gulimall-ware
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 
 mybatis-plus:
@@ -21,3 +24,7 @@ mybatis-plus:
 
 server:
   port: 11000
+
+logging:
+  level:
+    com.xqy: debug
