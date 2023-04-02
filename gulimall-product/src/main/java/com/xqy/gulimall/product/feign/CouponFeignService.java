@@ -4,6 +4,7 @@ import com.xqy.common.to.SkuReductionTo;
 import com.xqy.common.to.SpuBoundTo;
 import com.xqy.common.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @author xqy
  * @date 2023/01/04
  */
-@FeignClient("gulimall-coupon")
+@FeignClient(value = "gulimall-coupon")
 public interface CouponFeignService {
 
     /**
@@ -28,8 +29,9 @@ public interface CouponFeignService {
      * @param spuBoundTo spu绑定到
      * @return {@link R}
      */
-    @PostMapping("/coupon/spubounds/save")
+    @PostMapping("coupon/spubounds/save")
     R saveSpuBounds(@RequestBody SpuBoundTo spuBoundTo);
+//    R saveSpuBounds(@RequestBody SpuBoundsEntity spuBounds);
 
     /**
      * 保存sku减少
