@@ -1,6 +1,7 @@
 package com.xqy.gulimall.product.service.impl;
 
 import com.xqy.gulimall.product.service.CategoryBrandRelationService;
+import com.xqy.gulimall.product.vo.Catelog2Vo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 
+
 @Service("categoryService")
 @EnableTransactionManagement
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
 
-//    @Autowired
+    //    @Autowired
 //    CategoryDao categoryDao;
     @Autowired
     CategoryBrandRelationService categoryBrandRelationService;
@@ -55,11 +57,11 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //2.1 找到一级分类
         List<CategoryEntity> menu_list = entities.stream().filter((categoryEntity) -> {
             return categoryEntity.getParentCid() == 0;
-        }).map(categoryEntity->{
-            categoryEntity.setChildren(GetChildrens( categoryEntity , entities));
+        }).map(categoryEntity -> {
+            categoryEntity.setChildren(GetChildrens(categoryEntity, entities));
             return categoryEntity;
-        }).sorted((menu1 , menu2)->{
-            return menu1.getSort()- menu2.getSort();
+        }).sorted((menu1, menu2) -> {
+            return menu1.getSort() - menu2.getSort();
         }).collect(Collectors.toList());
 
         return menu_list;
@@ -104,7 +106,50 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public void updateCascade(CategoryEntity category) {
         this.updateById(category);
-        categoryBrandRelationService.updateCategory(category.getCatId() , category.getName());
+        categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
+    }
+
+    @Override
+    public List<CategoryEntity> getLevel1Categorys() {
+        return baseMapper.selectList(
+                new QueryWrapper<CategoryEntity>()
+                        .eq("parent_cid", 0)
+        );
+
+    }
+
+    @Override
+    public Map<String, List<Catelog2Vo>> getCatelogJson() {
+        //1.查出所有的一级分类
+        List<CategoryEntity> level1Categorys = this.getLevel1Categorys();
+        //封装数据、
+        Map<String, List<Catelog2Vo>> parentCid = level1Categorys.stream().collect(Collectors.toMap(k -> k.getCatId().toString(), v -> {
+            //每个一级分类，查找每个一级分类的二级分类
+            List<CategoryEntity> categoryEntities = baseMapper.selectList(
+                    new QueryWrapper<CategoryEntity>()
+                            .eq("parent_cid", v.getCatId())
+            );
+            List<Catelog2Vo> catelog2Vos = null;
+            if (categoryEntities != null) {
+                catelog2Vos = categoryEntities.stream().map(l2 -> {
+                    Catelog2Vo catelog2Vo = new Catelog2Vo(v.getCatId().toString(), null, l2.getCatId().toString(), l2.getName());
+                    //找当前二级分类下的三级分类；
+                    List<CategoryEntity> level3Catelog = baseMapper.selectList(
+                            new QueryWrapper<CategoryEntity>()
+                                    .eq("parent_cid", l2.getCatId())
+                    );
+                    if (level3Catelog != null) {
+                        List<Catelog2Vo.Catelog3Vo> collect = level3Catelog.stream().map(l3 -> {
+                            return new Catelog2Vo.Catelog3Vo(l2.getCatId().toString(), l3.getCatId().toString(), l3.getName());
+                        }).collect(Collectors.toList());
+                        catelog2Vo.setCatalog3List(collect);
+                    }
+                    return catelog2Vo;
+                }).collect(Collectors.toList());
+            }
+            return catelog2Vos;
+        }));
+        return parentCid;
     }
 
     /**
@@ -114,13 +159,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * @param paths     路径
      * @return {@link List}<{@link Long}>
      */
-    private List<Long> findParentPath(Long catelogId , List<Long> paths){
+    private List<Long> findParentPath(Long catelogId, List<Long> paths) {
         //1.放入当前路径
         paths.add(catelogId);
         CategoryEntity byId = this.getById(catelogId);
 
-        if (byId.getParentCid()!= 0 ) {
-            findParentPath(byId.getParentCid() , paths);
+        if (byId.getParentCid() != 0) {
+            findParentPath(byId.getParentCid(), paths);
         }
         return paths;
     }
@@ -128,21 +173,21 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     /**
      * 递归查找所有菜单的子菜单
      *
-     * @param current_menu     当前菜单
-     * @param entities 所有实体
+     * @param current_menu 当前菜单
+     * @param entities     所有实体
      * @return {@link List}<{@link CategoryEntity}>
      */
-    private List<CategoryEntity> GetChildrens( CategoryEntity current_menu , List<CategoryEntity> entities ){
+    private List<CategoryEntity> GetChildrens(CategoryEntity current_menu, List<CategoryEntity> entities) {
 
         List<CategoryEntity> collect = entities.stream().filter(categoryEntity -> {
             //得到2级菜单
             return categoryEntity.getParentCid().equals(current_menu.getCatId());
         }).map(categoryEntity -> {
             //递归得到3级菜单
-            categoryEntity.setChildren(GetChildrens( categoryEntity , entities));
+            categoryEntity.setChildren(GetChildrens(categoryEntity, entities));
             return categoryEntity;
-        }).sorted((menu1 , menu2)->{
-            return (menu1.getSort()==null?0: menu1.getSort())-(menu2.getSort()==null?0: menu2.getSort());
+        }).sorted((menu1, menu2) -> {
+            return (menu1.getSort() == null ? 0 : menu1.getSort()) - (menu2.getSort() == null ? 0 : menu2.getSort());
         }).collect(Collectors.toList());
         return collect;
     }

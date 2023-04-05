@@ -21,6 +21,9 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  thymeleaf:
+    cache: false
+
 
 
 mybatis-plus:
@@ -43,4 +46,6 @@ feign:
       gulimall-coupon:
         connectTimeout: 100000
         readTimeout: 100000
+
+
 

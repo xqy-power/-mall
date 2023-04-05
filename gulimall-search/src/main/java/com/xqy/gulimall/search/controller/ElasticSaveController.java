@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class ElasticSaveController {
         try {
             b = productSaveService.productStatusUp(skuEsModels);
         }catch (Exception e){
-            log.error("ElasticSaveController商品上架出错: {}" , e);
+            log.error("ElasticSaveController商品上架出错:{ }" , e);
         }
         if (!b) {
             return R.ok();
