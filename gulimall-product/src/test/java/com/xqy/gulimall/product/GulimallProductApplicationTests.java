@@ -9,12 +9,18 @@ import com.xqy.gulimall.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 @Slf4j
@@ -27,11 +33,33 @@ public class GulimallProductApplicationTests {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    RedissonClient redissonClient;
+    @Test
+    public void redisson() {
+        System.out.println(redissonClient);
+    }
+
+
     @Test
     public void pathTest() {
-        Long[] catelogPath = categoryService.findCatelogPath(225L);
-        log.error("路径数组：{}" , Arrays.asList(catelogPath));
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        ops.set("people" , "xqy_"+ UUID.randomUUID().toString());
+//        Long[] catelogPath = categoryService.findCatelogPath(225L);
+//        log.error("路径数组：{}" , Arrays.asList(catelogPath));
     }
+    @Test
+    public void pathTest2() {
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String people = ops.get("people");
+        System.out.println(people);
+//        Long[] catelogPath = categoryService.findCatelogPath(225L);
+//        log.error("路径数组：{}" , Arrays.asList(catelogPath));
+    }
+
 
 
     @Test

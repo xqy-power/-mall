@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.56.10:3306/gulimall_pms?useSSL=false&characterEncoding=utf8&serverTimezone=GMT
+    url: jdbc:mysql://192.168.133.132:3306/gulimall_pms?useSSL=false&characterEncoding=utf8&serverTimezone=GMT
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
@@ -21,6 +21,23 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.133.132
+    #host: 127.0.0.1
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000   #缓存的存活时间
+      use-key-prefix: true
+      #如果制定了缓存 的前缀 ，就用缓存的前缀作为缓存的名字  ， 没有制定前缀就用缓存的名字
+      #key-prefix: CACHE_
+      #是否缓存空值,防止缓存穿透的问题
+      cache-null-values: true
+
+
 
 
 mybatis-plus:
@@ -35,4 +52,14 @@ server:
 logging:
   level:
     com.xqy.gulimall: debug
+feign:
+  hystrix:
+    enabled: false
+  client:
+    config:
+      gulimall-coupon:
+        connectTimeout: 100000
+        readTimeout: 100000
+
+
 

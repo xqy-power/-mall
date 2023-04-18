@@ -1,0 +1,27 @@
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+  application:
+    name: gulimall-search
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-value: 1  #表示逻辑删除
+      logic-not-delete-value: 0 #表示逻辑不删除
+server:
+  port: 12000
+logging:
+  level:
+    com.xqy.gulimall: debug
+
