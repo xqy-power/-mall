@@ -6,7 +6,10 @@ import com.xqy.gulimall.product.entity.AttrGroupEntity;
 import com.xqy.gulimall.product.service.CategoryBrandRelationService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -75,6 +78,12 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
             //TODO 更新其他关联表信息
 
         }
+    }
+
+    @Override
+    @Cacheable(value = "brand",key = "#root.methodName",sync = true)
+    public List<BrandEntity> getBrandsByIds(List<Long> brandId) {
+        return this.baseMapper.selectBatchIds(brandId);
     }
 
 }

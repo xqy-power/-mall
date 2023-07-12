@@ -56,7 +56,12 @@ spring:
         - id: gulimall-host-route
           uri: lb://gulimall-product
           predicates:
-            - Host=**.gulimall.com,gulimall.com
+            - Host=gulimall.com
+
+        - id: gulimall-search-route
+          uri: lb://gulimall-search
+          predicates:
+            - Host=search.gulimall.com
 
 
 

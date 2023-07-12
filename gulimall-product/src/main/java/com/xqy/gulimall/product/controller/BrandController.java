@@ -2,6 +2,7 @@ package com.xqy.gulimall.product.controller;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -58,6 +59,14 @@ public class BrandController {
     public R info(@PathVariable("brandId") Long brandId){
 		BrandEntity brand = brandService.getById(brandId);
 
+        return R.ok().put("brand", brand);
+    }
+
+    @RequestMapping("/infos")
+    // @RequiresPermissions("product:brand:info")
+    public R info(@RequestParam("brandIds") List<Long> brandId){
+//        BrandEntity brand = brandService.getById(brandId);
+        List<BrandEntity> brand = brandService.getBrandsByIds(brandId);
         return R.ok().put("brand", brand);
     }
 
