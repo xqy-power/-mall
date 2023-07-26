@@ -3,6 +3,7 @@ package com.xqy.gulimall.search.vo;
 import com.xqy.common.to.es.SkuEsModel;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +34,7 @@ public class SearchResult {
 
     //面包屑导航功能
     private List<NavVo> navs;
+    private List<Long> attrIds = new ArrayList<>();
 
     @Data
     public static class NavVo {

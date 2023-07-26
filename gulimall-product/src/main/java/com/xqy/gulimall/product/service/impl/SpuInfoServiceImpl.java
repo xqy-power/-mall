@@ -83,7 +83,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
      * @param vo 签证官
      */
     @Override
-//    @Transactional(readOnly = false)
+    @Transactional(readOnly = false)
     public void saveSpuInfo(SpuSaveVo vo) {
 //        1.保存spu基本信息  pms_spu_info
         SpuInfoEntity infoEntity = new SpuInfoEntity();
@@ -119,15 +119,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }).collect(Collectors.toList());
         productAttrValueService.saveProductAttr(collect);
 
-//        5.保存spu的积分信息  gulimall-sms ==》 sms_spu_bounds
-        Bounds bounds = vo.getBounds();
-        SpuBoundTo spuBoundTo = new SpuBoundTo();
-        BeanUtils.copyProperties(bounds, spuBoundTo);
-        spuBoundTo.setSpuId(infoEntity.getId());
-        R r = couponFeignService.saveSpuBounds(spuBoundTo);
-        if (r.getCode() != 0 ){
-            log.error("远程保存spu积分信息出错");
-        }
+////        5.保存spu的积分信息  gulimall-sms ==》 sms_spu_bounds
+//        Bounds bounds = vo.getBounds();
+//        SpuBoundTo spuBoundTo = new SpuBoundTo();
+//        BeanUtils.copyProperties(bounds, spuBoundTo);
+//        spuBoundTo.setSpuId(infoEntity.getId());
+//        R r = couponFeignService.saveSpuBounds(spuBoundTo);
+//        if (r.getCode() != 0 ){
+//            log.error("远程保存spu积分信息出错");
+//        }
 
 
 //        6.保存当前spu对应的所有sku信息
@@ -179,16 +179,16 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuSaleAttrValueService.saveBatch(collectSkuSaleAttr);
 
 
-//        6.4)  sku的优惠满减信息  gulimall-sms ==》 sms_sku_ladder 、 sms_sku_full_reduction ， sms_member_price
-                SkuReductionTo skuReductionTo = new SkuReductionTo();
-                BeanUtils.copyProperties(sku, skuReductionTo);
-                skuReductionTo.setSkuId(skuId);
-                if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0"))==1){
-                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
-                    if (r1.getCode() != 0 ){
-                        log.error("远程保存sku优惠信息出错");
-                    }
-                }
+////        6.4)  sku的优惠满减信息  gulimall-sms ==》 sms_sku_ladder 、 sms_sku_full_reduction ， sms_member_price
+//                SkuReductionTo skuReductionTo = new SkuReductionTo();
+//                BeanUtils.copyProperties(sku, skuReductionTo);
+//                skuReductionTo.setSkuId(skuId);
+//                if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0"))==1){
+//                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+//                    if (r1.getCode() != 0 ){
+//                        log.error("远程保存sku优惠信息出错");
+//                    }
+//                }
             });
         }
 

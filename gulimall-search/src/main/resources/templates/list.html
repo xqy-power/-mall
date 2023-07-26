@@ -780,9 +780,9 @@
                 <h3><b>手机</b><em>商品筛选</em></h3>
                 <div class="st-ext">共&nbsp;<span>10135</span>个商品 </div>
             </div>
-            <div class="JD_nav_logo">
+            <div class="JD_nav_logo" th:with="brandid=${param.brandId}" >
                 <!--品牌-->
-                <div class="JD_nav_wrap">
+                <div  th:if ="${#strings.isEmpty(brandid)}" class="JD_nav_wrap">
                     <div class="sl_key">
                         <span>品牌：</span>
                     </div>
@@ -848,7 +848,8 @@
                     </div>
                 </div>
                 <!--商品属性-->
-                <div class="JD_pre" th:each="attr: ${result.getAttrs()}" >
+                <!--/*@thymesVar id="attrsttrs" type=""*/-->
+                <div class="JD_pre" th:each="attr: ${result.getAttrs()}" th:if="${!#lists.contains(result.attrIds,attr.attrId)}" >
                     <div class="sl_key">
                         <span th:text="${attr.getAttrName()}">系统：</span>
                     </div>
@@ -1250,7 +1251,7 @@
                                 </a>
                             </span>
                             <span class="page_span2">
-                                <em>共<b th:text="${result.totalPages}">169</b>页&nbsp;&nbsp;到第</em>
+                                <em>共<b th:text="${result.totalPages}"></b>页&nbsp;&nbsp;到第</em>
                                 <input type="number" value="1" class="page_input">
                                 <em>页</em>
                                 <a href="#">确定</a>

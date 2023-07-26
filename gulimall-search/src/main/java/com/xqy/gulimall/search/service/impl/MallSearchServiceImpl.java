@@ -2,6 +2,7 @@ package com.xqy.gulimall.search.service.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
+import com.sun.xml.internal.bind.v2.TODO;
 import com.xqy.common.to.es.SkuEsModel;
 import com.xqy.common.utils.R;
 import com.xqy.gulimall.search.config.GulimallElasticSearchConfig;
@@ -113,6 +114,7 @@ public class MallSearchServiceImpl implements MallSearchService {
             //1.得到属性的id
             long attrId = bucket.getKeyAsNumber().longValue();
             attrVo.setAttrId(attrId);
+
             //2.得到属性的名字
             String attrName = ((ParsedStringTerms) bucket.getAggregations().get("attr_name_agg")).getBuckets().get(0).getKeyAsString();
             attrVo.setAttrName(attrName);
@@ -192,6 +194,7 @@ public class MallSearchServiceImpl implements MallSearchService {
                 navVo.setNavValue(s[1]);
                 //2.属性的名字
                 R r = productFeignService.attrInfo(Long.parseLong(s[0]));
+                result.getAttrIds().add(Long.parseLong(s[0]));
                 if (r.getCode() == 0) {
                     AttrResponseVo data = r.getData("attr", new TypeReference<AttrResponseVo>() {
                     });
@@ -209,28 +212,31 @@ public class MallSearchServiceImpl implements MallSearchService {
         }
 
 //        //品牌，分类，属性
-//        if (param.getBrandId() != null && param.getBrandId().size() > 0) {
-//            List<SearchResult.NavVo> navs = result.getNavs();
-//            SearchResult.NavVo navVo = new SearchResult.NavVo();
-//            navVo.setNavName("品牌");
-//            //TODO 1.远程查询品牌
-//            R r = productFeignService.brandsInfo(param.getBrandId());
-//            if (r.getCode() == 0) {
-//                List<BrandVo> data = r.getData("brand", new TypeReference<List<BrandVo>>() {
-//                });
-//                StringBuffer buffer = new StringBuffer();
-//                String replace = "";
-//                for (BrandVo brandVo : data) {
-//                    buffer.append(brandVo.getBrandName() + ";");
-//                    //取消这个面包屑以后跳转的地址
-//                    replace = replaceQueryString(param,brandVo.getBrandId()+"" ,"brandId");
-//                }
-//                navVo.setNavValue(buffer.toString());
-//                navVo.setLink("http://search.gulimall.com/list.html?"+replace);
-//            }
-//            navs.add(navVo);
-////            result.setNavs(navs);
-//        }
+        if (param.getBrandId() != null && param.getBrandId().size() > 0) {
+            List<SearchResult.NavVo> navs = result.getNavs();
+            if (!StringUtils.isEmpty(navs)){
+                SearchResult.NavVo navVo = new SearchResult.NavVo();
+                navVo.setNavName("品牌");
+                R r = productFeignService.brandsInfo(param.getBrandId());
+                if (r.getCode() == 0) {
+                    List<BrandVo> data = r.getData("brand", new TypeReference<List<BrandVo>>() {
+                    });
+                    StringBuffer buffer = new StringBuffer();
+                    String replace = "";
+                    for (BrandVo brandVo : data) {
+                        buffer.append(brandVo.getName() + ";");
+                        //取消这个面包屑以后跳转的地址
+                        replace = replaceQueryString(param,brandVo.getBrandId()+"" ,"brandId");
+                    }
+                    navVo.setNavValue(buffer.toString());
+                    navVo.setLink("http://search.gulimall.com/list.html?"+replace);
+                }
+                if (!StringUtils.isEmpty(navVo)){
+                    navs.add(navVo);
+                    result.setNavs(navs);
+                }
+            }
+        }
 
 
         System.out.println(result);

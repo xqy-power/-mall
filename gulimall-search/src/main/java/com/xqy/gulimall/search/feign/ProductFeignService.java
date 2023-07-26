@@ -22,5 +22,4 @@ public interface ProductFeignService {
     public R brandsInfo(@RequestParam("brandIds") List<Long> brandId);
 
 
-
 }

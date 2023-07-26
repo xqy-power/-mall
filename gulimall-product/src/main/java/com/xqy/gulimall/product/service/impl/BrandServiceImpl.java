@@ -81,7 +81,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
     }
 
     @Override
-    @Cacheable(value = "brand",key = "#root.methodName",sync = true)
+//    @Cacheable(value = "brand",key = "#root.methodName",sync = true)
     public List<BrandEntity> getBrandsByIds(List<Long> brandId) {
         return this.baseMapper.selectBatchIds(brandId);
     }

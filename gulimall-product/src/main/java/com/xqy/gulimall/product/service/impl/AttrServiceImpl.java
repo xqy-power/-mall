@@ -154,7 +154,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
      * @return {@link AttrRespVo}
      */
     @Override
-    @Cacheable(value = "attr", key = "'attrInfo:'+#root.args[0]")
+//    @Cacheable(value = "attr", key = "'attrInfo:'+#root.args[0]")
     public AttrRespVo getAttrInfo(Long attrId) {
         AttrRespVo attrRespVo = new AttrRespVo();
         AttrEntity attrEntity = this.getById(attrId);
