@@ -37,9 +37,6 @@ spring:
       #是否缓存空值,防止缓存穿透的问题
       cache-null-values: true
 
-
-
-
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
@@ -62,4 +59,9 @@ feign:
         readTimeout: 100000
 
 
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
 
