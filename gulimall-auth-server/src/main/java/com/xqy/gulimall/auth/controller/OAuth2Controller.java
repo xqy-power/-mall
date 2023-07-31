@@ -6,10 +6,9 @@ import com.xqy.common.utils.HttpUtils;
 import com.xqy.common.utils.R;
 import com.xqy.gulimall.auth.feign.MemberFeignService;
 import com.xqy.gulimall.auth.vo.GiteeUserVo;
-import com.xqy.gulimall.auth.vo.MemberResponseVo;
+import com.xqy.common.vo.MemberResponseVo;
 import com.xqy.gulimall.auth.vo.SociaUser;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ public class OAuth2Controller {
     @Autowired
     MemberFeignService memberFeignService;
     @GetMapping("/oauth2.0/gitee/success")
-    public String gitee(@RequestParam String code) throws Exception {
+    public String gitee(@RequestParam String code , HttpSession session ,
+                        HttpServletResponse httpServletResponse) throws Exception {
         Map<String, String> header = new HashMap<>();
         Map<String, String> query = new HashMap<>();
         //1、收到授权码，去申请令牌token
@@ -75,6 +77,16 @@ public class OAuth2Controller {
                 //登录成功
                 MemberResponseVo data = r.getData("data", new TypeReference<MemberResponseVo>() {
                 });
+                //保存登录状态 第一次使用session，命令浏览器保存卡号 jsessionid=xxx
+                //以后浏览器访问哪个网站就会带上这个jsessionid，直到卡号失效
+                //子域之间 gulimall.com auth.gulimall.com order.gulimall.com
+                //发卡的时候设置cookie的时候设置为父域名，这样所有子域名都能使用这个cookie
+                //TODO 默认发的令牌，session=NTkyOWEyNGMtN2Q3OC00Njk5LWI5OGYtNjE4M2E2  作用域：当前域 （解决子域session共享问题）
+                //TODO 使用JSON的序列化方式，将对象序列化为json字符串，保存到redis中
+                session.setAttribute("loginUser",data);
+//                httpServletResponse.addCookie(new Cookie("JSESSIONID",));
+
+
                 log.info("登录成功:用户{}",data.toString());
                 return "redirect:http://gulimall.com";
             } else {

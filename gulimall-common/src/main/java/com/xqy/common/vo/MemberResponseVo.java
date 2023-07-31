@@ -1,4 +1,4 @@
-package com.xqy.gulimall.auth.vo;
+package com.xqy.common.vo;
 
 import lombok.Data;
 

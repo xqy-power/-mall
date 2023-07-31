@@ -1,5 +1,6 @@
 package com.xqy.gulimall.member.service.impl;
 
+import com.mysql.cj.Session;
 import com.xqy.gulimall.member.entity.MemberLevelEntity;
 import com.xqy.gulimall.member.exception.PhoneExistException;
 import com.xqy.gulimall.member.exception.UserNameExistException;

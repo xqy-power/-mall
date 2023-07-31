@@ -5,6 +5,7 @@ import com.mysql.cj.log.Log;
 import com.xqy.common.constant.AuthServerConstant;
 import com.xqy.common.exception.BizCodeEnume;
 import com.xqy.common.utils.R;
+import com.xqy.common.vo.MemberResponseVo;
 import com.xqy.gulimall.auth.feign.MemberFeignService;
 import com.xqy.gulimall.auth.feign.ThirdPartFeignService;
 import com.xqy.gulimall.auth.vo.UserLoginVo;
@@ -21,6 +22,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +47,24 @@ public class LoginController {
 
     @Autowired
     MemberFeignService memberFeignService;
+
+    /**
+     * 跳转到登录页面
+     *
+     * @return
+     */
+    @GetMapping("/login.html")
+    public String loginPage(HttpSession session){
+        //判断是否已经登录
+        Object attribute = session.getAttribute(AuthServerConstant.LOGIN_USER);
+        if (attribute == null) {
+            //没登录
+            return "login";
+        } else {
+            //已经登录
+            return "redirect:http://gulimall.com";
+        }
+    }
 
     @ResponseBody
     @GetMapping("/sms/sendCode")
@@ -138,18 +158,22 @@ public class LoginController {
 
 
     @PostMapping("/login")
-    public String login(UserLoginVo userLoginVo , RedirectAttributes redirectAttributes) {
+    public String login(UserLoginVo userLoginVo, RedirectAttributes redirectAttributes, HttpSession session) {
         //feign调用登录
         R loginMember = memberFeignService.login(userLoginVo);
         if (loginMember.getCode() == 0) {
-            UserLoginVo data = loginMember.getData("data", new TypeReference<UserLoginVo>() {});
+            MemberResponseVo data = loginMember.getData("data", new TypeReference<MemberResponseVo>() {
+            });
 //            ("登录成功：用户信息：{}", data);
-            System.err.println("登录成功：用户信息：==>"+data);
+            System.err.println("登录成功：用户信息：==>" + data);
+            //登录成功，将登录成功的信息保存到springSession
+            session.setAttribute(AuthServerConstant.LOGIN_USER, data);
             //登录成功，跳转到首页
             return "redirect:http://gulimall.com";
         } else {
             Map<String, String> errors = new HashMap<>();
-            errors.put("msg", loginMember.getData("msg", new TypeReference<String>() {}));
+            errors.put("msg", loginMember.getData("msg", new TypeReference<String>() {
+            }));
             //登录失败，跳转到登录页
             redirectAttributes.addFlashAttribute("errors", errors);
             return "redirect:http://auth.gulimall.com/login.html";
