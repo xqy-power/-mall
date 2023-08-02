@@ -152,7 +152,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      *
      * @return
      */
-    @Cacheable(cacheNames = {"category"}, key = "#root.method.name")
+    @Cacheable(cacheNames = {"category"}, key = "#root.method.name", sync = true)
     @Override
     public Map<String, List<Catelog2Vo>> getCatelogJson() {
         //查询全部的分类数据 ，之后stream流filter过滤找到相应的几级分类 封装数据
@@ -223,9 +223,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         } finally {
             lock.unlock();
         }
-
         return dataFromDB;
-
     }
 
     /**

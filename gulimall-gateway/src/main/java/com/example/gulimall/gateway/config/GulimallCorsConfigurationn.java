@@ -6,6 +6,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
+/**
+ * gulimall歌珥configurationn
+ *
+ * @author xqy
+ * @date 2023/07/31
+ */
 @Configuration
 public class GulimallCorsConfigurationn {
     @Bean

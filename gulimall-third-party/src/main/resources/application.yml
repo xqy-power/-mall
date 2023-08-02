@@ -11,6 +11,14 @@ spring:
       oss:
         #Endpoint以华东1（杭州）为例，其它Region请按实际情况填写。
         endpoint: https://oss-cn-hangzhou.aliyuncs.com
+      #短信验证服务
+      sms:
+        host: https://gyytz.market.alicloudapi.com
+        path: /sms/smsSend
+        method: POST
+        appcode: 061fb5a334e647d282b9c3fccb01b03e
+        smsSignId: 2e65b1bb3d054466b82f0c9d125465e2
+        templateId: a09602b817fd47e59e7c6e603d3f088d
   application:
     name: gulimall-third-party
 

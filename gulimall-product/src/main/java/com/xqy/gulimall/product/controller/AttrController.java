@@ -95,7 +95,6 @@ public class AttrController {
     // @RequiresPermissions("product:attr:info")
     public R info(@PathVariable("attrId") Long attrId) {
         AttrRespVo attrRespVo = attrService.getAttrInfo(attrId);
-
         return R.ok().put("attr", attrRespVo);
     }
 

@@ -3,9 +3,14 @@ package com.xqy.gulimall.product;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.xqy.gulimall.product.dao.AttrGroupDao;
+import com.xqy.gulimall.product.dao.SkuSaleAttrValueDao;
 import com.xqy.gulimall.product.entity.BrandEntity;
 import com.xqy.gulimall.product.service.BrandService;
 import com.xqy.gulimall.product.service.CategoryService;
+import com.xqy.gulimall.product.vo.SkuItemSaleAttrVo;
+import com.xqy.gulimall.product.vo.SkuItemVo;
+import com.xqy.gulimall.product.vo.SpuItemAttrGroupVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,6 +43,21 @@ public class GulimallProductApplicationTests {
 
     @Autowired
     RedissonClient redissonClient;
+
+    @Autowired
+    AttrGroupDao attrGroupDao;
+    @Autowired
+    SkuSaleAttrValueDao skuSaleAttrValueDao;
+    @Test
+    public void attrGroupDap(){
+        List<SpuItemAttrGroupVo> attrGroupWithAttrsBySpuId = attrGroupDao.getAttrGroupWithAttrsBySpuId(100L, 225L);
+        System.out.println(attrGroupWithAttrsBySpuId);
+    }
+    @Test
+    public void attrSaleDao(){
+        List<SkuItemSaleAttrVo> saleAttrsBySpuId = skuSaleAttrValueDao.getSaleAttrsBySpuId(42L);
+        System.out.println(saleAttrsBySpuId);
+    }
     @Test
     public void redisson() {
         System.out.println(redissonClient);

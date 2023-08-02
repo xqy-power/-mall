@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://192.168.133.132:3306/gulimall_pms?useSSL=false&characterEncoding=utf8&serverTimezone=GMT
+    url: jdbc:mysql://192.168.253.128:3306/gulimall_pms?useSSL=false&characterEncoding=utf8&serverTimezone=GMT
     driver-class-name: com.mysql.cj.jdbc.Driver
   cloud:
     nacos:
@@ -24,7 +24,7 @@ spring:
   thymeleaf:
     cache: false
   redis:
-    host: 192.168.133.132
+    host: 192.168.253.128
     #host: 127.0.0.1
     port: 6379
   cache:
@@ -36,9 +36,8 @@ spring:
       #key-prefix: CACHE_
       #是否缓存空值,防止缓存穿透的问题
       cache-null-values: true
-
-
-
+  session:
+    store-type: redis
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -62,4 +61,9 @@ feign:
         readTimeout: 100000
 
 
+gulimall:
+  thread:
+    core-size: 20
+    max-size: 200
+    keep-alive-time: 10
 
