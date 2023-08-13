@@ -2,8 +2,6 @@ package com.xqy.gulimall.product.service.impl;
 
 import com.alibaba.fastjson2.TypeReference;
 import com.xqy.common.constant.ProductConstant;
-import com.xqy.common.to.SkuReductionTo;
-import com.xqy.common.to.SpuBoundTo;
 import com.xqy.common.to.es.SkuEsModel;
 import com.xqy.common.utils.R;
 import com.xqy.gulimall.product.entity.*;
@@ -17,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -330,5 +327,19 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
              * 3.执行请求会有重试机制
              */
         }
+    }
+
+    /**
+     * 通过sku id
+     *
+     * @param skuId sku id
+     * @return {@link SpuInfoEntity}
+     */
+
+    @Override
+    public SpuInfoEntity getBySkuId(Long skuId) {
+        SkuInfoEntity skuInfoEntity = skuInfoService.getById(skuId);
+        Long spuId = skuInfoEntity.getSpuId();
+        return getById(spuId);
     }
 }

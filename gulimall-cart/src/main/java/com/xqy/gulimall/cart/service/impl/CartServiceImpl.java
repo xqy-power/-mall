@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -135,7 +136,7 @@ public class CartServiceImpl implements CartService {
                 //临时购物车中有数据  进行合并
                 for (CartItem item : tempCartItems) {
                     //调用addToCart直接往购物车里添加
-                    if (!StringUtils.isEmpty(item.getSkuId())&&!StringUtils.isEmpty(item.count)){
+                    if (!StringUtils.isEmpty(item.getSkuId()) && !StringUtils.isEmpty(item.count)) {
                         addToCart(item.getSkuId(), item.count);
                     }
                 }
@@ -196,7 +197,7 @@ public class CartServiceImpl implements CartService {
      * @param cartKey 车钥匙
      */
     @Override
-    public void clearCart(String cartKey){
+    public void clearCart(String cartKey) {
         stringRedisTemplate.delete(cartKey);
     }
 
@@ -211,9 +212,9 @@ public class CartServiceImpl implements CartService {
         BoundHashOperations<String, Object, Object> cartOps = getCartOps();
         CartItem cartItem = getCartItem(skuId);
         if (!StringUtils.isEmpty(cartItem)) {
-            cartItem.setCheck(check==1?true:false);
+            cartItem.setCheck(check == 1 ? true : false);
             String string = JSON.toJSONString(cartItem);
-            cartOps.put(skuId.toString(),string);
+            cartOps.put(skuId.toString(), string);
         }
     }
 
@@ -230,7 +231,7 @@ public class CartServiceImpl implements CartService {
         if (!StringUtils.isEmpty(cartItem)) {
             cartItem.setCount(num);
             String string = JSON.toJSONString(cartItem);
-            cartOps.put(skuId.toString(),string);
+            cartOps.put(skuId.toString(), string);
         }
     }
 
@@ -243,5 +244,34 @@ public class CartServiceImpl implements CartService {
     public void deleteItem(Long skuId) {
         BoundHashOperations<String, Object, Object> cartOps = getCartOps();
         cartOps.delete(skuId.toString());
+    }
+
+    /**
+     * 获取用户购物车条目
+     *
+     * @return {@link List}<{@link CartItem}>
+     */
+    @Override
+    public List<CartItem> getUserCartItems() {
+        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        if (userInfoTo.getUserId() != null) {
+            //已登录
+            String cartKey = CART_PREFIX + userInfoTo.getUserId();
+            //获取登录后的购物车的数据(包含合并过来的临时购物车的数据和当前用户的购物车的数据)
+            List<CartItem> cartItems = getCartItems(cartKey);
+            List<CartItem> items = null;
+            if (cartItems != null) {
+                items = cartItems.stream().filter(CartItem::getCheck).map(
+                        (item) -> {
+                            //更新最新价格
+                            BigDecimal r = productFeignService.getPrice(item.getSkuId());
+                            item.setPrice(r);
+                            return item;
+                        }
+                ).collect(Collectors.toList());
+            }
+            return items;
+        }
+        return null;
     }
 }

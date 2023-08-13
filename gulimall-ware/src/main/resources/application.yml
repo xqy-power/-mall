@@ -14,6 +14,23 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  rabbitmq:
+    host: 192.168.253.128 # 主机名
+    port: 5672 # 端口
+    virtual-host: / # 虚拟主机
+    username: guest # 用户名
+    password: guest # 密码
+    #开启发送端确认机制
+    publisher-confirms: true
+    #开启发送端消息抵达队列确认机制
+    publisher-returns: true
+    #只要抵达队列，以异步的方式优先回调我们的returnCallback
+    template:
+      mandatory: true
+    #消费端确认机制 手动ack
+    listener:
+      simple:
+        acknowledge-mode: manual
 
 
 mybatis-plus:
@@ -28,3 +45,19 @@ server:
 logging:
   level:
     com.xqy: debug
+    
+seata:
+  registry: # TC服务注册中心的配置，微服务根据这些信息去注册中心获取tc服务地址
+    # 参考tc服务自己的registry.conf中的配置
+    type: nacos
+    nacos: # tc
+      server-addr: 127.0.0.1:8848
+      namespace: "319e8753-ae7f-4e51-b499-49ffba57cdad"
+      group: DEFAULT_GROUP
+      application: seata-server # tc服务在nacos中的服务名称
+      cluster: default
+  tx-service-group: order-service # 事务组，根据这个获取tc服务的cluster名称
+  service:
+    vgroup-mapping: # 事务组与TC服务cluster的映射关系
+      order-service: default
+  data-source-proxy-mode: AT

@@ -40,6 +40,5 @@
         <module>gulimall-gateway</module>
         <module>gulimall-third-party</module>
         <module>gulimall-auth-server</module>
-        <module>gulimall-auth-server</module>
     </modules>
 </project>

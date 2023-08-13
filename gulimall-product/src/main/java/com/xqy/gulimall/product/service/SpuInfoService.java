@@ -30,5 +30,7 @@ public interface SpuInfoService extends IService<SpuInfoEntity> {
      * @param spuId
      */
     void up(Long spuId);
+
+    SpuInfoEntity getBySkuId(Long skuId);
 }
 

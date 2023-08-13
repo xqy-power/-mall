@@ -36,6 +36,7 @@
         <div class="si_top">
             <p>
                 <span>谷粒商城不会以任何理由要求您转账汇款，谨防诈骗。</span>
+<!--                <span style="color: red">[[${session.msg}]]</span>-->
             </p>
         </div>
         <div class="si_cen">
@@ -55,6 +56,7 @@
                 <img src="/static/login/JD_img/4de5019d2404d347897dee637895d02b_19.png"/>
                 <span><a href="/static/login/#">更安全</a></span>
             </p>
+            <div th:if="${session.msg!=null}" style="color:red;text-align: center;" th:text="${session.msg}"></div>
         </div>
         <div class="si_bom1 tab" style="display: none;">
             <div class="error">
@@ -74,7 +76,7 @@
                     </li>
                     <li class="bri">
                         <div style="color:red" th:text="${errors != null ? (#maps.containsKey(errors, 'msg') ? errors.msg : '') : ''}"></div>
-
+                        <div th:if="${session.msg!=null}" style="color:red" th:text="${session.msg}"></div>
                         <a href="/static/login/">忘记密码</a>
                     </li>
                     <li class="ent">

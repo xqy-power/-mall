@@ -11,6 +11,23 @@ spring:
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
   application:
     name: gulimall-member
+  thymeleaf:
+    cache: false
+  redis:
+    host: 192.168.253.128
+    #host: 127.0.0.1
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000   #缓存的存活时间
+      use-key-prefix: true
+      #如果制定了缓存 的前缀 ，就用缓存的前缀作为缓存的名字  ， 没有制定前缀就用缓存的名字
+      #key-prefix: CACHE_
+      #是否缓存空值,防止缓存穿透的问题
+      cache-null-values: true
+  session:
+    store-type: redis
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -20,3 +37,4 @@ mybatis-plus:
 
 server:
   port: 8000
+

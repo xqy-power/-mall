@@ -4,6 +4,7 @@ import com.xqy.gulimall.cart.vo.Cart;
 import com.xqy.gulimall.cart.vo.CartItem;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -31,4 +32,6 @@ public interface CartService {
     void countItem(Long skuId, Integer num);
 
     void deleteItem(Long skuId);
+
+    List<CartItem> getUserCartItems();
 }
