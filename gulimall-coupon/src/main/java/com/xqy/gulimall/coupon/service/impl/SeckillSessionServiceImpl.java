@@ -18,9 +18,14 @@ public class SeckillSessionServiceImpl extends ServiceImpl<SeckillSessionDao, Se
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<SeckillSessionEntity> sessionEntityQueryWrapper = new QueryWrapper<>();
+        String key = (String) params.get("key");
+        if (key != null) {
+            sessionEntityQueryWrapper.eq("id", key).or().eq("name", key);
+        }
         IPage<SeckillSessionEntity> page = this.page(
                 new Query<SeckillSessionEntity>().getPage(params),
-                new QueryWrapper<SeckillSessionEntity>()
+                sessionEntityQueryWrapper
         );
 
         return new PageUtils(page);

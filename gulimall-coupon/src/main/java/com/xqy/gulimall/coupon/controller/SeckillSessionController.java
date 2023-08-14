@@ -38,7 +38,6 @@ public class SeckillSessionController {
    // @RequiresPermissions("coupon:seckillsession:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = seckillSessionService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 

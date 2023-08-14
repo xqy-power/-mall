@@ -104,7 +104,6 @@ public class MemberController {
    // @RequiresPermissions("member:member:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = memberService.queryPage(params);
-
         return R.ok().put("page", page);
     }
 
