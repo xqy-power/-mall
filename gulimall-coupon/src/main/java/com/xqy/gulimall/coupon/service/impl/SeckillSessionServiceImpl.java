@@ -1,5 +1,6 @@
 package com.xqy.gulimall.coupon.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,7 +21,7 @@ public class SeckillSessionServiceImpl extends ServiceImpl<SeckillSessionDao, Se
     public PageUtils queryPage(Map<String, Object> params) {
         QueryWrapper<SeckillSessionEntity> sessionEntityQueryWrapper = new QueryWrapper<>();
         String key = (String) params.get("key");
-        if (key != null) {
+        if (!StringUtils.isEmpty(key)) {
             sessionEntityQueryWrapper.eq("id", key).or().eq("name", key);
         }
         IPage<SeckillSessionEntity> page = this.page(
