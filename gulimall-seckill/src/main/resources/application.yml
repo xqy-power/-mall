@@ -1,0 +1,50 @@
+server:
+  port: 25000
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+  application:
+    name: gulimall-seckill
+#  rabbitmq:
+#    host: 192.168.253.128 # 主机名
+#    port: 5672 # 端口
+#    virtual-host: / # 虚拟主机
+#    username: guest # 用户名
+#    password: guest # 密码
+#    #开启发送端确认机制
+#    publisher-confirms: true
+#    #开启发送端消息抵达队列确认机制
+#    publisher-returns: true
+#    #只要抵达队列，以异步的方式优先回调我们的returnCallback
+#    template:
+#      mandatory: true
+#    #消费端确认机制 手动ack
+#    listener:
+#      simple:
+#        acknowledge-mode: manual
+
+  redis:
+    host: 192.168.253.128
+    #host: 127.0.0.1
+    port: 6379
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000   #缓存的存活时间
+      use-key-prefix: true
+      #如果制定了缓存 的前缀 ，就用缓存的前缀作为缓存的名字  ， 没有制定前缀就用缓存的名字
+      #key-prefix: CACHE_
+      #是否缓存空值,防止缓存穿透的问题
+      cache-null-values: true
+  session:
+    store-type: redis
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss
+
+logging:
+  level:
+    root: info

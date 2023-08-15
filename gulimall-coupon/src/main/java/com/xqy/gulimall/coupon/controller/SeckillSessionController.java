@@ -1,15 +1,12 @@
 package com.xqy.gulimall.coupon.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.xqy.gulimall.coupon.entity.SeckillSessionEntity;
 import com.xqy.gulimall.coupon.service.SeckillSessionService;
@@ -30,6 +27,18 @@ import com.xqy.common.utils.R;
 public class SeckillSessionController {
     @Autowired
     private SeckillSessionService seckillSessionService;
+
+
+    /**
+     * 得到lates3天会议
+     *
+     * @return {@link R}
+     */
+    @GetMapping("/lates3DaySession")
+    public R getLates3DaysSession(){
+        List<SeckillSessionEntity> sessionEntities = seckillSessionService.getLates3DaysSession();
+        return R.ok().put("data",sessionEntities);
+    }
 
     /**
      * 列表
