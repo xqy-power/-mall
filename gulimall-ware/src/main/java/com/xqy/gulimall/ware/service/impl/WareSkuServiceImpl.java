@@ -115,18 +115,19 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         String orderSn = orderTo.getOrderSn();
         //查询最新库存状态，防止重复解锁库存
         WareOrderTaskEntity orderTask = wareOrderTaskService.getOrderTaskByOrderSn(orderSn);
-        Long id = orderTask.getId();
-        //查询库存工作单的最新状态
-        List<WareOrderTaskDetailEntity> entities = wareOrderTaskDetailService.list(
-                new QueryWrapper<WareOrderTaskDetailEntity>()
-                        .eq("task_id", id)
-                        .eq("lock_status", 1));
-        //解锁库存
-        for (WareOrderTaskDetailEntity item : entities) {
-            unLockStock(item.getSkuId(), item.getWareId(), item.getSkuNum(), item.getId());
+        if (orderTask != null) {
+            Long id = orderTask.getId();
+            //查询库存工作单的最新状态
+            List<WareOrderTaskDetailEntity> entities = wareOrderTaskDetailService.list(
+                    new QueryWrapper<WareOrderTaskDetailEntity>()
+                            .eq("task_id", id)
+                            .eq("lock_status", 1));
+            //解锁库存
+            for (WareOrderTaskDetailEntity item : entities) {
+                unLockStock(item.getSkuId(), item.getWareId(), item.getSkuNum(), item.getId());
+            }
         }
     }
-
     /**
      * 联合国锁定股票
      *

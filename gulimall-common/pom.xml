@@ -9,6 +9,10 @@
     <artifactId>gulimall-common</artifactId>
     <description>每一个微服务的公共依赖，bean ， 工具类等</description>
     <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>

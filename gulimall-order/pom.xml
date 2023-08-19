@@ -19,6 +19,10 @@
         <seata.version>1.4.2</seata.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-easysdk -->
 <!--        支付宝支付开发工具包-->

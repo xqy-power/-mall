@@ -30,6 +30,9 @@ public class SkuItemVo {
     //5.获得spu规格参数信息
     List<SpuItemAttrGroupVo> groupAttrs;
 
+    //6.秒杀信息
+    SeckillInfoVo seckillInfoVo;
+
 //    @Data
 //    public static class SkuItemSaleAttrVo {
 //        private Long attrId;

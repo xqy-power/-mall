@@ -3,6 +3,7 @@ package com.xqy.gulimall.order.service.impl;
 import com.alibaba.fastjson2.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.xqy.common.exception.NoStockException;
+import com.xqy.common.to.SeckillOrderTo;
 import com.xqy.common.to.mq.OrderTo;
 import com.xqy.common.utils.R;
 import com.xqy.common.vo.MemberResponseVo;
@@ -84,9 +85,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        QueryWrapper<OrderEntity> queryWrapper = new QueryWrapper<>();
+        String key = (String) params.get("key");
+        if (!StringUtils.isEmpty(key)) {
+            queryWrapper.eq("order_sn", key).or().eq("receiver_name", key).or().eq("receiver_phone", key);
+        }
         IPage<OrderEntity> page = this.page(
                 new Query<OrderEntity>().getPage(params),
-                new QueryWrapper<OrderEntity>()
+                queryWrapper
         );
 
         return new PageUtils(page);
@@ -318,7 +324,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         }).collect(Collectors.toList());
 
         page.setRecords(orderEntities);
-
         return new PageUtils(page);
     }
 
@@ -349,6 +354,65 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         return "success";
     }
 
+    /**
+     * 创建秒杀订单
+     *
+     * @param seckillOrderTo 秒杀,
+     */
+    @Override
+    @Transactional
+    public void createSecKillOrder(SeckillOrderTo seckillOrderTo) {
+        //TODO 保存订单信息
+        OrderEntity orderEntity = new OrderEntity();
+        orderEntity.setOrderSn(seckillOrderTo.getOrderSn());
+        orderEntity.setMemberId(seckillOrderTo.getMemberId());
+        orderEntity.setCreateTime(new Date());
+        BigDecimal multiply = seckillOrderTo.getSeckillPrice().multiply(new BigDecimal("" + seckillOrderTo.getNum()));
+        orderEntity.setPayAmount(multiply);
+        orderEntity.setTotalAmount(multiply);
+        orderEntity.setStatus(OrderStatusEnum.CREATE_NEW.getCode());
+        //TODO 通过memberFeign 查找会员的默认收货地址
+        List<MemberAddressVo> address = memberFeignService.getAddress(seckillOrderTo.getMemberId().toString());
+        address.stream().filter(item->{
+            return item.getDefaultStatus()==1;
+        }).collect(Collectors.toList()).forEach(item->{
+            orderEntity.setReceiverCity(item.getCity());
+            orderEntity.setReceiverDetailAddress(item.getDetailAddress());
+            orderEntity.setReceiverName(item.getName());
+            orderEntity.setReceiverPhone(item.getPhone());
+            orderEntity.setReceiverPostCode(item.getPostCode());
+            orderEntity.setReceiverProvince(item.getProvince());
+            orderEntity.setReceiverRegion(item.getRegion());
+        });
+        this.save(orderEntity);
+        rabbitTemplate.convertAndSend("order-event-exchange","order.create.order",orderEntity);
+        //TODO 保存订单项信息
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setOrderSn(seckillOrderTo.getOrderSn());
+        orderItemEntity.setRealAmount(multiply);
+        orderItemEntity.setSkuQuantity(seckillOrderTo.getNum());
+        orderItemEntity.setSkuId(seckillOrderTo.getSkuId());
+        //TODO 获取当前SKU的详细信息  productFeignService.getSpuInfoBySkuId()
+        R skuInfoBySkuId = productFeignService.getSkuInfoBySkuId(seckillOrderTo.getSkuId());
+        if (skuInfoBySkuId.getCode()==0) {
+            SecKillSkuInfoVo skuInfoBySkuIdData = skuInfoBySkuId.getData("skuInfo",new TypeReference<SecKillSkuInfoVo>() {
+            });
+            orderItemEntity.setSkuName(skuInfoBySkuIdData.getSkuName());
+            orderItemEntity.setSkuPic(skuInfoBySkuIdData.getSkuDefaultImg());
+            orderItemEntity.setSkuPrice(skuInfoBySkuIdData.getPrice());
+        }
+        R spuInfoBySkuId = productFeignService.getSpuInfoBySkuId(seckillOrderTo.getSkuId());
+        if (spuInfoBySkuId.getCode()==0) {
+            SpuInfoVo spuInfoBySkuIdData = spuInfoBySkuId.getData("data",new TypeReference<SpuInfoVo>() {
+            });
+            orderItemEntity.setSpuId(spuInfoBySkuIdData.getId());
+            orderItemEntity.setSpuBrand(spuInfoBySkuIdData.getBrandId().toString());
+            orderItemEntity.setCategoryId(spuInfoBySkuIdData.getCatalogId());
+        }
+        orderItemService.save(orderItemEntity);
+
+    }
+
 
     /**
      * 保存订单
@@ -356,7 +420,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * @param order 订单
      */
 
-    private void saveOrder(OrderCreateTo order) {
+    @Transactional
+    public void saveOrder(OrderCreateTo order) {
         //保存订单
         OrderEntity orderEntity = order.getOrder();
         orderEntity.setModifyTime(new Date());

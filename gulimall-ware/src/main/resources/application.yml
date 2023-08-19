@@ -9,6 +9,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
   application:
     name: gulimall-ware
   jackson:
@@ -61,3 +65,9 @@ seata:
     vgroup-mapping: # 事务组与TC服务cluster的映射关系
       order-service: default
   data-source-proxy-mode: AT
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

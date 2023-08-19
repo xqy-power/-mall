@@ -7,6 +7,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
     gateway:
       routes:
 #        - id: test
@@ -53,6 +57,13 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+        - id: order-route
+          uri: lb://gulimall-order
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         - id: admin-route
           uri: lb://renren-fast
           predicates:
@@ -89,8 +100,16 @@ spring:
           uri: lb://gulimall-member
           predicates:
             - Host=member.gulimall.com
+
+        - id: gulimall-seckill-route
+          uri: lb://gulimall-seckill
+          predicates:
+            - Host=seckill.gulimall.com
   application:
     name: gulimall-gateway
 
-
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

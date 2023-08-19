@@ -1,6 +1,5 @@
-package com.xqy.gulimall.order.interceptor;
+package com.xqy.gulimall.seckill.interceptor;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.xqy.common.constant.AuthServerConstant;
 import com.xqy.common.vo.MemberResponseVo;
 import org.springframework.stereotype.Component;
@@ -29,21 +28,18 @@ public class LoginUserInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        boolean match = antPathMatcher.match("/order/order/status/**", uri);
-        boolean match1 = antPathMatcher.match("/payed/**", uri);
-        boolean match2 = antPathMatcher.match("/order/order/list/**", uri);
-        if (match||match1||match2) {
-            return true;
+        boolean match = antPathMatcher.match("/kill", uri);
+        if (match) {
+            HttpSession session = request.getSession();
+            MemberResponseVo attribute = (MemberResponseVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
+            if (attribute == null) {
+                // 没有登录，重定向到登录页面
+                session.setAttribute("msg", "请先登录");
+                response.sendRedirect("http://auth.gulimall.com/login.html");
+                return false;
+            }
+            loginUser.set(attribute);
         }
-        HttpSession session = request.getSession();
-        MemberResponseVo attribute = (MemberResponseVo) session.getAttribute(AuthServerConstant.LOGIN_USER);
-        if (attribute == null) {
-            // 没有登录，重定向到登录页面
-            session.setAttribute("msg", "请先登录");
-            response.sendRedirect("http://auth.gulimall.com/login.html");
-            return false;
-        }
-        loginUser.set(attribute);
         return true;
     }
 

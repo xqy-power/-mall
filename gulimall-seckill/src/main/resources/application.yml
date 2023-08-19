@@ -7,25 +7,33 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
+
   application:
     name: gulimall-seckill
-#  rabbitmq:
-#    host: 192.168.253.128 # 主机名
-#    port: 5672 # 端口
-#    virtual-host: / # 虚拟主机
-#    username: guest # 用户名
-#    password: guest # 密码
-#    #开启发送端确认机制
-#    publisher-confirms: true
-#    #开启发送端消息抵达队列确认机制
-#    publisher-returns: true
-#    #只要抵达队列，以异步的方式优先回调我们的returnCallback
-#    template:
-#      mandatory: true
-#    #消费端确认机制 手动ack
-#    listener:
-#      simple:
-#        acknowledge-mode: manual
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  rabbitmq:
+    host: 192.168.253.128 # 主机名
+    port: 5672 # 端口
+    virtual-host: / # 虚拟主机
+    username: guest # 用户名
+    password: guest # 密码
+    #开启发送端确认机制
+    publisher-confirms: true
+    #开启发送端消息抵达队列确认机制
+    publisher-returns: true
+    #只要抵达队列，以异步的方式优先回调我们的returnCallback
+    template:
+      mandatory: true
+    #消费端确认机制 手动ack
+    listener:
+      simple:
+        acknowledge-mode: manual
 
   redis:
     host: 192.168.253.128
@@ -44,7 +52,15 @@ spring:
     store-type: redis
   mvc:
     date-format: yyyy-MM-dd HH:mm:ss
+  thymeleaf:
+    cache: false
 
 logging:
   level:
     root: info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

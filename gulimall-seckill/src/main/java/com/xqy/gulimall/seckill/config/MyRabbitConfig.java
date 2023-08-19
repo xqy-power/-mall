@@ -1,4 +1,4 @@
-package com.xqy.gulimall.ware.config;
+package com.xqy.gulimall.seckill.config;
 
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -19,6 +19,7 @@ public class MyRabbitConfig {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+
 
 
     @Autowired
@@ -42,8 +43,8 @@ public class MyRabbitConfig {
     }
 
     @Autowired
-    //设置消息失败回调
     public void setReturnCallback(RabbitTemplate rabbitTemplate) {
+        //设置消息失败回调
         rabbitTemplate.setReturnCallback(new RabbitTemplate.ReturnCallback() {
             /**
              * 返回

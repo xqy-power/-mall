@@ -12,6 +12,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
   application:
     name: gulimall-order
   rabbitmq:
@@ -92,3 +96,9 @@ alipay:
   charset: utf-8
   gatewayUrl: https://openapi-sandbox.dl.alipaydev.com/gateway.do
   timeout: 10m
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

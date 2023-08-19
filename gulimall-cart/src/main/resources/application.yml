@@ -10,6 +10,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
   thymeleaf:
     cache: false
   redis:
@@ -33,3 +37,8 @@ gulimall:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

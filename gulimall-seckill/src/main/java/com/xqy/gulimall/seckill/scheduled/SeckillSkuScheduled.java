@@ -38,7 +38,7 @@ public class SeckillSkuScheduled {
      * 上传秒杀sku latest3天
      * 0 0 3 * * ?
      */
-    //TODO 接口幂等性
+    //TODO 接口幂等性 重复上架无需处理  redisson分布式锁  10s自动解锁  判断Redis  key值是否存在
     @Scheduled(cron = "*/10 * * * * ?")
     public void uploadSeckillSkuLatest3Days() {
         //1.重复上架无需处理
@@ -50,6 +50,5 @@ public class SeckillSkuScheduled {
         } finally {
             lock.unlock();
         }
-        log.info("上架秒杀商品");
     }
 }

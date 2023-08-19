@@ -2,9 +2,11 @@ package com.xqy.gulimall.coupon.controller;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +32,8 @@ import com.xqy.common.utils.R;
 public class SeckillSkuRelationController {
     @Autowired
     private SeckillSkuRelationService seckillSkuRelationService;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
     /**
      * 列表
@@ -61,7 +65,10 @@ public class SeckillSkuRelationController {
    // @RequiresPermissions("coupon:seckillskurelation:save")
     public R save(@RequestBody SeckillSkuRelationEntity seckillSkuRelation){
 		seckillSkuRelationService.save(seckillSkuRelation);
-
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
         return R.ok();
     }
 
@@ -72,7 +79,10 @@ public class SeckillSkuRelationController {
    // @RequiresPermissions("coupon:seckillskurelation:update")
     public R update(@RequestBody SeckillSkuRelationEntity seckillSkuRelation){
 		seckillSkuRelationService.updateById(seckillSkuRelation);
-
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
         return R.ok();
     }
 
@@ -83,7 +93,10 @@ public class SeckillSkuRelationController {
     //@RequiresPermissions("coupon:seckillskurelation:delete")
     public R delete(@RequestBody Long[] ids){
 		seckillSkuRelationService.removeByIds(Arrays.asList(ids));
-
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
         return R.ok();
     }
 

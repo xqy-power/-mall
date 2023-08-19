@@ -32,6 +32,7 @@ public enum BizCodeEnume {
 
     UNKNOW_EXCEPTION(10000,"系统未知异常"),
     VALID_EXCEPTION(10001,"参数格式校验失败"),
+    TO_MANY_REQUEST(10003,"请求太过频繁"),
     PRODUCT_UP_EXCEPTION(111000 , "商品上架异常"),
     SMS_CODE_EXCEPTION(10002,"验证码发送频率过高，请稍后再试"),
     USER_EXIST_EXCEPTION(15001,"用户存在"),

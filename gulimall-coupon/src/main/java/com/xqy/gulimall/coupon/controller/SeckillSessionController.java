@@ -3,9 +3,11 @@ package com.xqy.gulimall.coupon.controller;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import com.xqy.gulimall.coupon.entity.SeckillSessionEntity;
@@ -27,6 +29,8 @@ import com.xqy.common.utils.R;
 public class SeckillSessionController {
     @Autowired
     private SeckillSessionService seckillSessionService;
+    @Autowired
+    StringRedisTemplate redisTemplate;
 
 
     /**
@@ -58,7 +62,6 @@ public class SeckillSessionController {
    // @RequiresPermissions("coupon:seckillsession:info")
     public R info(@PathVariable("id") Long id){
 		SeckillSessionEntity seckillSession = seckillSessionService.getById(id);
-
         return R.ok().put("seckillSession", seckillSession);
     }
 
@@ -69,7 +72,10 @@ public class SeckillSessionController {
    // @RequiresPermissions("coupon:seckillsession:save")
     public R save(@RequestBody SeckillSessionEntity seckillSession){
 		seckillSessionService.save(seckillSession);
-
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
         return R.ok();
     }
 
@@ -80,6 +86,10 @@ public class SeckillSessionController {
    // @RequiresPermissions("coupon:seckillsession:update")
     public R update(@RequestBody SeckillSessionEntity seckillSession){
 		seckillSessionService.updateById(seckillSession);
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
 
         return R.ok();
     }
@@ -91,7 +101,10 @@ public class SeckillSessionController {
     //@RequiresPermissions("coupon:seckillsession:delete")
     public R delete(@RequestBody Long[] ids){
 		seckillSessionService.removeByIds(Arrays.asList(ids));
-
+        Set<String> keys = redisTemplate.keys("seckill:" + "*");
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
         return R.ok();
     }
 

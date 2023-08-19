@@ -1,8 +1,12 @@
 package com.xqy.gulimall.product.service.impl;
 
+import com.alibaba.fastjson2.TypeReference;
+import com.xqy.common.utils.R;
 import com.xqy.gulimall.product.entity.SkuImagesEntity;
 import com.xqy.gulimall.product.entity.SpuInfoDescEntity;
+import com.xqy.gulimall.product.feign.SeckillFeignService;
 import com.xqy.gulimall.product.service.*;
+import com.xqy.gulimall.product.vo.SeckillInfoVo;
 import com.xqy.gulimall.product.vo.SkuItemSaleAttrVo;
 import com.xqy.gulimall.product.vo.SkuItemVo;
 import com.xqy.gulimall.product.vo.SpuItemAttrGroupVo;
@@ -40,6 +44,9 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     SkuSaleAttrValueService skuSaleAttrValueService;
     @Autowired
     ThreadPoolExecutor executor;
+    @Autowired
+    SeckillFeignService seckillFeignService;
+
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         IPage<SkuInfoEntity> page = this.page(
@@ -151,10 +158,29 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             skuitemVo.setImages(images);
         }, executor);
 
+        CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
+            //3.查询当前sku是否参与秒杀服务
+            try {
+                R r = seckillFeignService.getSkuSeckillInfo(skuId);
+                if (r.getCode() == 0) {
+                    SeckillInfoVo seckillInfoVo = r.getData(new TypeReference<SeckillInfoVo>() {
+                    });
+                    skuitemVo.setSeckillInfoVo(seckillInfoVo);
+                }
+            } catch (Exception e) {
+                System.out.println("远程调用秒杀服务失败");
+            }
+        },executor);
+
         //等待所有任务完成
-        CompletableFuture.allOf(infoFuture,saleAttrFuture,descFuture,baseAttrFuture,imageFuture).get();
+        CompletableFuture.allOf(infoFuture,saleAttrFuture,descFuture,baseAttrFuture,imageFuture,seckillFuture).get();
 
         return skuitemVo;
+    }
+
+    @Override
+    public SkuInfoEntity getSkuInfoBySkuId(Long skuId) {
+        return this.baseMapper.selectOne(new QueryWrapper<SkuInfoEntity>().eq("sku_id", skuId));
     }
 
 }

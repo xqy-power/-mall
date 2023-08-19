@@ -50,6 +50,17 @@ public class MyMQConfig {
         return new Queue("order.release.order.queue", true, false, false);
     }
 
+
+    /**
+     * 订单秒杀订单
+     *
+     * @return {@link Queue}
+     */
+    @Bean
+    public Queue orderSecKillOrder() {
+        return new Queue("order.seckill.order.queue", true, false, false);
+    }
+
     /**
      * 事件顺序交换
      *
@@ -90,6 +101,16 @@ public class MyMQConfig {
     @Bean
     public Binding orderReleaseStockBinding() {
         return new Binding("stock.release.stock.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.release.other.#", null);
+    }
+
+    /**
+     * orderseckill绑定  秒杀队列 同交换机绑定
+     *
+     * @return {@link Binding}
+     */
+    @Bean
+    public Binding orderseckillBinding() {
+        return new Binding("order.seckill.order.queue", Binding.DestinationType.QUEUE, "order-event-exchange", "order.seckill.order", null);
     }
 
 

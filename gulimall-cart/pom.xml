@@ -19,6 +19,10 @@
     </properties>
     <dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <!-- ...springSession 完成session共享问题 -->
         <dependency>
             <groupId>org.springframework.session</groupId>

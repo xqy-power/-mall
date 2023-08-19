@@ -28,6 +28,14 @@ public class SkuInfoController {
     @Autowired
     private SkuInfoService skuInfoService;
 
+
+    @GetMapping("/skuId")
+    public R getSkuInfoBySkuId(@RequestParam Long skuId){
+        SkuInfoEntity skuInfo = skuInfoService.getSkuInfoBySkuId(skuId);
+        return R.ok().put("skuInfo", skuInfo);
+    }
+
+
     @GetMapping("/{skuId}/price")
     public BigDecimal getPrice(@PathVariable Long skuId) {
         return skuInfoService.getById(skuId).getPrice();
@@ -52,7 +60,6 @@ public class SkuInfoController {
    // @RequiresPermissions("product:skuinfo:info")
     public R info(@PathVariable("skuId") Long skuId){
 		SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
-
         return R.ok().put("skuInfo", skuInfo);
     }
 

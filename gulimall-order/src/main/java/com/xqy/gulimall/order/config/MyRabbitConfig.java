@@ -21,10 +21,6 @@ public class MyRabbitConfig {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-    @Bean
-    public MessageConverter jsonMessageConverter(){
-        return new Jackson2JsonMessageConverter();
-    }
 
     @Autowired
     public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {

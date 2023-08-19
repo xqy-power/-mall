@@ -9,6 +9,10 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
         namespace: 319e8753-ae7f-4e51-b499-49ffba57cdad
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:8333
     alicloud:
       #// 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户
       access-key: LTAI5t5nX7uP56Syi77UhmTP
@@ -66,6 +70,12 @@ gulimall:
     core-size: 20
     max-size: 200
     keep-alive-time: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
 
 #seata:
 #  registry: # TC服务注册中心的配置，微服务根据这些信息去注册中心获取tc服务地址
